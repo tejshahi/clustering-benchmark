@@ -1,0 +1,8 @@
+[project]
+name = "cluster-bench"
+version = "0.1.0"
+description = "Benchmarking clustering algorithms on Sentinel-2 crop time-series datasets (perennial vs annual)."
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

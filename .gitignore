@@ -1,0 +1,27 @@
+# Data (huge binary arrays — never commit)
+*.npy
+S2Agri-10pc-17/
+TimeSen2Crop/
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+.eggs/
+build/
+dist/
+.ipynb_checkpoints/
+
+# Env
+.venv/
+venv/
+env/
+
+# Results / outputs
+results/*
+!results/.gitkeep
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/

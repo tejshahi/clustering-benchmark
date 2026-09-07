@@ -1,0 +1,13 @@
+numpy>=1.24
+scipy>=1.10
+scikit-learn>=1.3
+pandas>=2.0
+matplotlib>=3.7
+seaborn>=0.12
+pyyaml>=6.0
+tqdm>=4.65
+joblib>=1.3
+
+# Optional: time-series-native clustering (DTW-based KMeans/KShape).
+# Install separately if needed — can be slow/tricky to build:
+# tslearn>=0.6

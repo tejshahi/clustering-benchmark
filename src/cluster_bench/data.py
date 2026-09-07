@@ -62,6 +62,13 @@ def load_dataset(key: str, config: Optional[dict] = None, mmap: bool = True) -> 
     )
 
 
+def count_unique_labels(ds: "Dataset") -> int:
+    """Number of distinct classes in ds.y. Cheap even on memmapped y:
+    it's a 1D int array of a few million elements at most.
+    """
+    return int(np.unique(np.asarray(ds.y)).shape[0])
+
+
 def subsample(
     ds: Dataset,
     n_samples: int,

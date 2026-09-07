@@ -18,7 +18,11 @@ def parse_args():
     p.add_argument("--dataset", required=True, choices=["s2agri", "timesen2crop"])
     p.add_argument("--config", default=str(data.DEFAULT_CONFIG_PATH))
     p.add_argument("--n-samples", type=int, default=None, help="Override config's sampling.n_samples")
-    p.add_argument("--n-clusters", type=int, default=None, help="Override config's clustering.n_clusters")
+    p.add_argument(
+        "--n-clusters", type=int, default=None,
+        help="Number of clusters. Default: auto — the number of distinct class labels "
+             "in the dataset. Overrides config's clustering.n_clusters.",
+    )
     p.add_argument("--algorithms", nargs="*", default=None, help="Override config's clustering.algorithms")
     p.add_argument("--no-plots", action="store_true")
     return p.parse_args()
@@ -31,7 +35,6 @@ def main():
 
     n_samples = args.n_samples or config["sampling"]["n_samples"]
     stratify = config["sampling"]["stratify_by_label"]
-    n_clusters = args.n_clusters or config["clustering"]["n_clusters"]
     algorithms = args.algorithms or config["clustering"]["algorithms"]
     feature_mode = config["preprocessing"]["feature_mode"]
     do_scale = config["preprocessing"]["scale"]
@@ -42,6 +45,22 @@ def main():
     print(f"[{args.dataset}] loading (memmapped)...")
     ds = data.load_dataset(args.dataset, config=config)
     print(f"[{args.dataset}] full size: X={ds.X.shape} y={ds.y.shape}")
+
+    # n_clusters precedence: --n-clusters CLI flag > config's clustering.n_clusters
+    # (if set) > auto-detected from the number of distinct labels in y. Auto is the
+    # default so clustering doesn't silently target the wrong number of groups when
+    # a dataset's label count doesn't match whatever was last configured.
+    config_n_clusters = config["clustering"].get("n_clusters")
+    if args.n_clusters is not None:
+        n_clusters = args.n_clusters
+        n_clusters_source = "--n-clusters"
+    elif config_n_clusters is not None:
+        n_clusters = config_n_clusters
+        n_clusters_source = "config"
+    else:
+        n_clusters = data.count_unique_labels(ds)
+        n_clusters_source = "auto (unique labels in y)"
+    print(f"[{args.dataset}] n_clusters={n_clusters} (source: {n_clusters_source})")
 
     print(f"[{args.dataset}] subsampling {n_samples} (stratified={stratify})...")
     X_raw, y = data.subsample(ds, n_samples=n_samples, stratify_by_label=stratify, seed=seed)

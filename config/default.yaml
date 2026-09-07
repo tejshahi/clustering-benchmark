@@ -39,7 +39,11 @@ preprocessing:
   scale: true
 
 clustering:
-  n_clusters: 2   # perennial vs annual -> start with 2
+  # Number of clusters. Leave null to auto-detect: the number of distinct
+  # class labels present in the dataset's y. Set an explicit integer here
+  # (e.g. 2, for perennial vs annual) to override auto-detection, or pass
+  # --n-clusters on the CLI to override per-run.
+  n_clusters: null
   algorithms:
     - kmeans
     - minibatch_kmeans

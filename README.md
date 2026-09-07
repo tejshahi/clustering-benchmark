@@ -64,8 +64,14 @@ clustering on raw flattened time series.
 
 ```bash
 python -m cluster_bench.run_benchmark --dataset s2agri
-python -m cluster_bench.run_benchmark --dataset timesen2crop --n-samples 5000 --n-clusters 2
+python -m cluster_bench.run_benchmark --dataset timesen2crop --n-samples 5000
 ```
+
+By default `n_clusters` is auto-detected as the number of distinct class
+labels in the dataset's `y` (see `data.count_unique_labels`). Override it
+with `--n-clusters N` on the CLI, or set `clustering.n_clusters` in
+`config/default.yaml` (e.g. to `2`, once you want clusters to target the
+perennial/annual split specifically rather than the full label set).
 
 Or, without installing the package:
 
